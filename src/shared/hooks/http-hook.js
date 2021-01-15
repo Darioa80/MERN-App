@@ -20,14 +20,19 @@ export const useHttpClient = () => {    //use is standard for naming hooks
             })
         
             const responseData = await response.json();
+
+            activeHttpRequests.current = activeHttpRequests.current.filter(reqCtrl => reqCtrl != httpAbortController);
+            //This keeps every controller except for the controller that was used for this successful request
+
             if(!response.ok){
                 throw new Error(responseData.message);
             }
             return responseData;
         } catch(err){
             setError(err.message);
+            setIsLoading(false)
+            throw err;
         }
-    setIsLoading(false);
     }, []);
 
     const clearError = () =>{
@@ -36,7 +41,7 @@ export const useHttpClient = () => {    //use is standard for naming hooks
 
     useEffect(() => {   //this will be called once, at the end
         return () => {
-            activeHttpRequestes.current.forEach(abortCtrl => AbortController.abort());  //aborts active http requests
+            activeHttpRequests.current.forEach(abortCtrl => AbortController.abort());  //aborts active http requests
         }
     },[]);
     return {isLoading, error, sendRequest, clearError}; //overall component returns this
