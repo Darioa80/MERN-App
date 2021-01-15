@@ -45,7 +45,7 @@ export const useForm = (initialInputs, initialFormValidity) => {    //actual fun
     });
 
     const inputHandler = useCallback((id, value, isValid) => { //used to prevent infinite loops with input.js
-        console.log(value);
+        
         dispatch({type: 'INPUT_CHANGE', 
         value: value, 
         isValid: isValid, 

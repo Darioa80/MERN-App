@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/auth-context';
 import './NavLinks.css';
 
 const NavLinks = props =>{
-    const auth = useContext(AuthContext);
+    const auth = useContext(AuthContext);   //AuthContext can be used in any file - lets us konw if the user is logged in
 
     return <ul className="nav-links">
         <li>
