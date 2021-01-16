@@ -52,7 +52,7 @@ const Auth = () => {
        
         if(isLoginMode){    //this state determines the form we show the user
             try{
-               await sendRequest('http://localhost:5000/api/users/login', 'POST', JSON.stringify({
+              const responseData = await sendRequest('http://localhost:5000/api/users/login', 'POST', JSON.stringify({
                     email: formState.inputs.email.value,
                     password: formState.inputs.password.value
                 }),
@@ -60,14 +60,14 @@ const Auth = () => {
                     'Content-Type': 'application/json',
                 });
 
-                auth.login(); 
+                auth.login(responseData.user.id); 
             } catch(err) {
 
             }
         } else {
             try {
              //update state  to refresh UI  
-            await sendRequest('http://localhost:5000/api/users/signup',     //response has all response data but doesn't have a parsed response body
+             const responseData =  await sendRequest('http://localhost:5000/api/users/signup',     //response has all response data but doesn't have a parsed response body
             'POST',             //fetch doesn't consider 400 or 500 response codes as an error
             JSON.stringify({
                 name: formState.inputs.name.value,
@@ -79,7 +79,7 @@ const Auth = () => {
             }
         
         );
-        auth.login();  
+        auth.login(responseData.user.id);  
         } catch(err){
 
         }

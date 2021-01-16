@@ -4,42 +4,34 @@ import React, { useEffect, useState } from 'react';
 import UsersList from '../components/UsersList';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
-
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
 
 const Users = () =>{
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState();
+
     const [loadedUsers, setLoadedUsers] = useState();
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
 
     useEffect(()=>{ //useEffect doesn't want async functions, so we put the async request within a non async function
-        const sendRequest = async () => {
-            setIsLoading(true);
+        const fetchUsers = async () => {
+           
             try{
-                const response =  await fetch('http://localhost:5000/api/users/');        //GET is the default method of Fetch, don't need to specify
-                const responseData = await response.json();
-                
-                if(!response.ok){
-                    throw new Error(responseData.message);
-                }
+                const responseData =  await sendRequest('http://localhost:5000/api/users/');        //GET is the default method of Fetch, don't need to specify
+   
                 setLoadedUsers(responseData.users); //defines loadedUsers
                 
                 } catch(err){
                 
-                    setError(err.message);
                 }
-                setIsLoading(false);
-        };
-        sendRequest();
-    },[])   //if the dependency array is blank, it will only run once
 
-    const errorHandler = () =>{
-        setError(null);
-    }
+        };
+        fetchUsers();
+    },[sendRequest]);   //if the dependency array is blank, it will only run once
+
 
     return (
     <React.Fragment>
-        <ErrorModal error = {error} onClear = {errorHandler}/>
+        <ErrorModal error = {error} onClear = {clearError}/>
         {isLoading && (
             <div className="center">
                 <LoadingSpinner />
