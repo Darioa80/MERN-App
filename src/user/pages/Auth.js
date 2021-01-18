@@ -122,7 +122,7 @@ const Auth = () => {
     element ="input" 
     type="password" 
     label="Password" 
-    validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}  //Sends in validators that we want to check
+    validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(6)]}  //Sends in validators that we want to check
     errorText="Please enter a valid password"
     onInput={inputHandler}
     />

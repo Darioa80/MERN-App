@@ -15,6 +15,7 @@ const UserPlaces = () => {
     const userID = useParams().userId;  //comes from app.js " <Route path="/:userId/places" exact> "
     //let's retrieve the data from the db here
 
+
     
 useEffect(() =>{ 
     const fetchPlaces = async () =>{
@@ -28,7 +29,11 @@ useEffect(() =>{
     fetchPlaces();
     },[sendRequest, userID]);
 
-   
+   const placeDeleteHandler = deletedPlaceId =>{
+      
+    setLoadedPlaces(prevPlaces => prevPlaces.filter(place => place.id !== deletedPlaceId));
+
+   }
     
     return (
     <React.Fragment>
@@ -38,7 +43,7 @@ useEffect(() =>{
             <LoadingSpinner />
         </div>
         )}
-        {!isLoading && loadedPlaces && <PlaceList items = {loadedPlaces}/>}
+        {!isLoading && loadedPlaces && <PlaceList items = {loadedPlaces} onDeletePlace = {placeDeleteHandler}/>}
     </React.Fragment>
         )
 };
