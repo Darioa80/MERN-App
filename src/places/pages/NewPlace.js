@@ -11,6 +11,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import Auth from '../../user/pages/Auth';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 
 const NewPlace = () => {
@@ -29,6 +30,10 @@ const NewPlace = () => {
         address: {
             value: '',
             isValid: false
+        }, 
+        image: {
+            value: null,
+            isValid: false
         }
     }, false);
   
@@ -37,22 +42,23 @@ const NewPlace = () => {
     const placeSubmitHandler = async event => {
         event.preventDefault();
         try{
+            const formData = new FormData();    //allows us to send both written and binary data 
+            formData.append('title', formState.inputs.title.value);
+            formData.append('description', formState.inputs.description.value);
+            formData.append('address', formState.inputs.address.value);
+            formData.append('creator', auth.userID);
+            formData.append('image', formState.inputs.image.value);
             await sendRequest('http://localhost:5000/api/places/',
                 'POST',
-                JSON.stringify({
-                title: formState.inputs.title.value,
-                description: formState.inputs.description.value,
-                address: formState.inputs.address.value,
-                creator: auth.userID
-            }),
-            {'Content-Type': 'application/json'});
+                formData);
+            console.log(formData);
             history.push('/');
         }catch(err) {
 
 
         }  
         
-        console.log(formState.inputs);  //send this to the back end
+          //send this to the back end
 
     }
 
@@ -87,7 +93,14 @@ const NewPlace = () => {
         errorText="Please enter a valid address."
         onInput={inputHandler}
         />
-        <Button type="submit" disabled = {!formState.isValid}>Add Place</Button>
+        <ImageUpload 
+        id="image" 
+        onInput={inputHandler} 
+        errorText="please provide an image."
+        />
+        <Button type="submit" disabled = {!formState.isValid}>
+            Add Place
+        </Button>
     </form>
     </React.Fragment>
     );

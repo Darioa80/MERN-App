@@ -53,39 +53,40 @@ const Auth = () => {
         setIsLoginMode(prevMode => !prevMode); //prevMode 
     }
 
-    const authSubmitHandler = async event => {
+    const authSubmitHandler = async event => {  //due to the image used in sign up, we can't only send JSON data
         event.preventDefault();
         console.log(formState.inputs);
         if(isLoginMode){    //this state determines the form we show the user
             try{
-              const responseData = await sendRequest('http://localhost:5000/api/users/login', 'POST', JSON.stringify({
-                    email: formState.inputs.email.value,
-                    password: formState.inputs.password.value
-                }),
-                 {
-                    'Content-Type': 'application/json',
-                });
-
-                auth.login(responseData.user.id); 
+                const responseData = await sendRequest(
+                    'http://localhost:5000/api/users/login',
+                    'POST',
+                    JSON.stringify({
+                      email: formState.inputs.email.value,
+                      password: formState.inputs.password.value
+                    }),
+                    {
+                      'Content-Type': 'application/json'
+                    }
+                  );
+                  auth.login(responseData.user.id);
             } catch(err) {
 
             }
         } else {
             try {
-             //update state  to refresh UI  
-             const responseData =  await sendRequest('http://localhost:5000/api/users/signup',     //response has all response data but doesn't have a parsed response body
-            'POST',             //fetch doesn't consider 400 or 500 response codes as an error
-            JSON.stringify({
-                name: formState.inputs.name.value,
-                email: formState.inputs.email.value,
-                password: formState.inputs.password.value
-            }),
-            {
-                'Content-Type': 'application/json',
-            }
+                const formData = new FormData();
+                formData.append('email', formState.inputs.email.value);
+                formData.append('name', formState.inputs.name.value);
+                formData.append('password', formState.inputs.password.value);
+                formData.append('image', formState.inputs.image.value);
+                const responseData = await sendRequest(
+                  'http://localhost:5000/api/users/signup',
+                  'POST',
+                  formData
+                );
         
-        );
-        auth.login(responseData.user.id);  
+                auth.login(responseData.user.id);
         } catch(err){
 
         }
@@ -115,7 +116,7 @@ const Auth = () => {
         errorText = "Please esnter a name."
         onInput={inputHandler}/>)
     }
-    {!isLoginMode && <ImageUpload center id = "image" onInput = {inputHandler}/>}
+    {!isLoginMode && <ImageUpload center id = "image" onInput = {inputHandler} errorText="Please upload an image."/>}
     <Input 
     id = "email"
     element ="input" 
