@@ -10,6 +10,7 @@ import { AuthContext} from '../../shared/context/auth-context';
 import './Auth.css';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 
 const Auth = () => {
@@ -32,7 +33,8 @@ const Auth = () => {
         if(!isLoginMode){
             setFormData({
                 ...formState.inputs,
-                name: undefined
+                name: undefined,
+                image: undefined
             },
              formState.inputs.email.isValid && formState.inputs.password.isValid);
         } else {
@@ -40,6 +42,10 @@ const Auth = () => {
                 ...formState.inputs,
                 name: {
                     value: '',
+                    isValid: false
+                },
+                image: {
+                    value: null,
                     isValid: false
                 }
             },false)
@@ -49,7 +55,7 @@ const Auth = () => {
 
     const authSubmitHandler = async event => {
         event.preventDefault();
-       
+        console.log(formState.inputs);
         if(isLoginMode){    //this state determines the form we show the user
             try{
               const responseData = await sendRequest('http://localhost:5000/api/users/login', 'POST', JSON.stringify({
@@ -99,15 +105,17 @@ const Auth = () => {
     {isLoading && <LoadingSpinner asOverlay/>}
     <h2>Log In Required</h2>
     <form className="place-form" onSubmit={authSubmitHandler}>
-    {!isLoginMode && <Input 
+    {!isLoginMode && (
+        <Input 
         element="input" 
         id="name" 
         type="text" 
         label = "Your Name" 
         validators={[VALIDATOR_REQUIRE()]} 
         errorText = "Please esnter a name."
-        onInput={inputHandler}/>
+        onInput={inputHandler}/>)
     }
+    {!isLoginMode && <ImageUpload center id = "image" onInput = {inputHandler}/>}
     <Input 
     id = "email"
     element ="input" 
