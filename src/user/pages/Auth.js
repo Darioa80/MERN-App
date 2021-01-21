@@ -55,7 +55,7 @@ const Auth = () => {
 
     const authSubmitHandler = async event => {  //due to the image used in sign up, we can't only send JSON data
         event.preventDefault();
-        console.log(formState.inputs);
+        console.log(isLoginMode);
         if(isLoginMode){    //this state determines the form we show the user
             try{
                 const responseData = await sendRequest(
@@ -69,6 +69,7 @@ const Auth = () => {
                       'Content-Type': 'application/json'
                     }
                   );
+                  console.log('Login');
                   auth.login(responseData.userId, responseData.token);
             } catch(err) {
 
@@ -85,7 +86,7 @@ const Auth = () => {
                   'POST',
                   formData
                 );
-        
+                console.log(responseData);
                 auth.login(responseData.userId, responseData.token);
         } catch(err){
 

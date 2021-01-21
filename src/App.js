@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Users from './user/pages/Users';
@@ -8,22 +8,15 @@ import UpdatePlace from './places/pages/UpdatePlace';
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import Auth from "./user/pages/Auth";
 import { AuthContext } from './shared/context/auth-context';
+import { useAuth } from './shared/hooks/auth-hook';
+
+let logoutTimer; //general variable in this fie, not tied to the rendering of the component
 
 const App = () => {
-  const [token, setToken] = useState(false);
-  const [userID, setUserID] = useState();
-
-  const login = useCallback((uid, token)=>{
-    setToken(token);
-    setUserID(uid);
-  }, []);
-
-  const logout = useCallback(()=>{
-    setToken(null);
-    setUserID(null);
-  }, []);
-
+ const { token, login, logout, userID } = useAuth();
+ 
   let routes;
+
   if(token){
     routes = (
       <Switch>
@@ -45,7 +38,7 @@ const App = () => {
   }
   else{
     routes = (
-      <React.Fragment>
+      <Switch>
       <Route path="/" exact>   
         <Users />
       </Route>
@@ -56,12 +49,20 @@ const App = () => {
         <Auth />
       </Route>
       <Redirect to="/auth"/> 
-    </React.Fragment>
+      </Switch>
     );
   }
 
   return (
-  <AuthContext.Provider value={{isLoggedIn: !!token, userID: userID, token: token, login: login, logout: logout }}>  
+  <AuthContext.Provider 
+    value={{
+      isLoggedIn: !!token,
+      userID: userID, 
+      token: token, 
+      login: login, 
+      logout: logout 
+      }}
+    >  
   <Router>
     <MainNavigation />
     <main>
