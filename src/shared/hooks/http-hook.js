@@ -11,6 +11,7 @@ export const useHttpClient = () => {    //use is standard for naming hooks
         setIsLoading(true);
         const httpAbortController = new AbortController();  //used to abort web requests
         activeHttpRequests.current.push(httpAbortController);   //remembers web requests through render cycles
+        
         try{
             const response = await fetch(url, {
                 method: method,
@@ -20,8 +21,6 @@ export const useHttpClient = () => {    //use is standard for naming hooks
             })
         
             const responseData = await response.json();
-            console.log('Response Data:');
-            console.log(responseData);
             activeHttpRequests.current = activeHttpRequests.current.filter(reqCtrl => reqCtrl !== httpAbortController);
             //This keeps every controller except for the controller that was used for this successful request
 

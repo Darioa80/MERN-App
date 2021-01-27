@@ -39,7 +39,7 @@ const UpdatePlace = () => {
         
         const fetchPlace = async () =>{
             try{
-                const responseData = await sendRequest(`http://localhost:5000/api/places/${placeID}`);
+                const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/places/${placeID}`);
                 setLoadedPlace(responseData.place); //response comes from places-controller.js
                 setFormData(    //using form hook to update Form data
                     {        
@@ -71,7 +71,7 @@ const UpdatePlace = () => {
         console.log(formState);
         try{
             await sendRequest(
-            `http://localhost:5000/api/places/${placeID}`,
+            `${process.env.REACT_APP_BACKEND_URL}/places/${placeID}`,
             'PATCH',
             JSON.stringify(
                  {

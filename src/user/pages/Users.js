@@ -16,7 +16,7 @@ const Users = () =>{
         const fetchUsers = async () => {
            
             try{
-                const responseData =  await sendRequest('http://localhost:5000/api/users/');        //GET is the default method of Fetch, don't need to specify
+                const responseData =  await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users/`);        //GET is the default method of Fetch, don't need to specify
                 
                     setLoadedUsers(responseData.users); //defines loadedUsers
                 

@@ -55,11 +55,11 @@ const Auth = () => {
 
     const authSubmitHandler = async event => {  //due to the image used in sign up, we can't only send JSON data
         event.preventDefault();
-        console.log(isLoginMode);
+
         if(isLoginMode){    //this state determines the form we show the user
             try{
                 const responseData = await sendRequest(
-                    'http://localhost:5000/api/users/login',
+                    `${process.env.REACT_APP_BACKEND_URL}/users/login`,
                     'POST',
                     JSON.stringify({
                       email: formState.inputs.email.value,
@@ -69,8 +69,11 @@ const Auth = () => {
                       'Content-Type': 'application/json'
                     }
                   );
-                  console.log('Login');
+                 
+                  console.log(auth);
                   auth.login(responseData.userId, responseData.token);
+                  console.log(responseData.token);
+                  console.log(auth);
             } catch(err) {
 
             }
@@ -82,12 +85,13 @@ const Auth = () => {
                 formData.append('password', formState.inputs.password.value);
                 formData.append('image', formState.inputs.image.value);
                 const responseData = await sendRequest(
-                  'http://localhost:5000/api/users/signup',
+                  `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
                   'POST',
                   formData
                 );
+                console.log("response from sign up");
                 console.log(responseData);
-                auth.login(responseData.userId, responseData.token);
+                auth.login(responseData.user, responseData.token);
         } catch(err){
 
         }

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 
-let logoutTimer;
+let logoutTimer; //general variable in this fie, not tied to the rendering of the component
 
 export const useAuth = () => {
     const [token, setToken] = useState(false);
@@ -10,8 +10,13 @@ export const useAuth = () => {
    
   
     const login = useCallback((uid, token, expirationDate)=>{
+      console.log("login function:");
+      console.log(uid);
+      console.log(token);
+      
       setToken(token);
       setUserID(uid);
+      
       const tokenExpirationDate =
         expirationDate || new Date(Date.now() + 1000*60*60);
         
@@ -38,7 +43,7 @@ export const useAuth = () => {
     useEffect(() => {
       if(token && tokenExpirationDate){
         const remainingTime = tokenExpirationDate.getTime() - new Date().getTime();
-        console.log(remainingTime);
+        
         logoutTimer =  setTimeout(logout, remainingTime); 
       }
       else {
